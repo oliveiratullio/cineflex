@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import styled from "styled-components"
 import HomePage from "./pages/HomePage/HomePage"
@@ -6,15 +7,15 @@ import SessionsPage from "./pages/SessionsPage/SessionsPage"
 import SuccessPage from "./pages/SuccessPage/SuccessPage"
 
 export default function App() {
+    const [movieId, setMovieId] = useState();
     return (
         <>
         <BrowserRouter>
         <NavContainer>CINEFLEX</NavContainer>
 
-        {/*<HomePage />*/} 
-        <SessionsPage /> 
+        {/*<HomePage />*/}
         {/* <SeatsPage /> */}
-        
+        <SessionsPage /> 
         {/* <SuccessPage /> */}
         </BrowserRouter>
         </>

@@ -1,7 +1,29 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components"
 
-export default function SessionsPage() {
-
+export default function  SessionsPage(props) {
+    const { setMovieId } = props;
+    const { idFilme } = useParams();
+    const [sessions, setSessions] = useState([])
+    const [sessionDays, setSessionDays] = useState([])
+    useEffect(() => {
+        const promise = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/movies/${idFilme}/showtimes`)
+        promise.then((res) => {
+            setSessions(res.data)
+            setSessionDays(res.data.days);
+        })
+        promise.catch((err) =>{
+            console.log(err.response.data)
+        })
+    },[])
+    if(sessions.length === 0){
+        return(
+            <PageContainer>
+                Carregando...
+            </PageContainer>
+        )
+    }
     return (
         <PageContainer>
             Selecione o horário
