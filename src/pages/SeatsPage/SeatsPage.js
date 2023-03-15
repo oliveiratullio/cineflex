@@ -1,17 +1,35 @@
+import { useEffect, useState } from "react"
 import styled from "styled-components"
+import axios from "axios"
+import { useParams } from "react-router-dom"
 
-export default function SeatsPage() {
-
+export default function SeatsPage(){
+    const {idSessao} = useParams()
+    const [session, setSession] = useState(undefined);
+    useEffect(() => {
+        const promise = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`)
+        promise.then((res) => {
+            setSession(res.data)
+        })
+        promise.catch((err) => console.log(err.response.data))
+    },[])
+    console.log(session)
+    if(session === undefined){
+        return(
+            <PageContainer>
+                Carregando...
+            </PageContainer>
+        )
+    }
     return (
         <PageContainer>
             Selecione o(s) assento(s)
 
             <SeatsContainer>
-                <SeatItem>01</SeatItem>
-                <SeatItem>02</SeatItem>
-                <SeatItem>03</SeatItem>
-                <SeatItem>04</SeatItem>
-                <SeatItem>05</SeatItem>
+                {session.seats.map((seat) =>{
+                    return(
+                        <SeatItem key={seat.id}>{seat.name}</SeatItem>
+                    )})}
             </SeatsContainer>
 
             <CaptionContainer>
@@ -41,11 +59,11 @@ export default function SeatsPage() {
 
             <FooterContainer>
                 <div>
-                    <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+                    <img src={session.movie.posterURL} alt={session.movie.title} />
                 </div>
                 <div>
-                    <p>Tudo em todo lugar ao mesmo tempo</p>
-                    <p>Sexta - 14h00</p>
+                    <p>{session.movie.title}</p>
+                    <p>{session.day.weekday} - {session.name}</p>
                 </div>
             </FooterContainer>
 

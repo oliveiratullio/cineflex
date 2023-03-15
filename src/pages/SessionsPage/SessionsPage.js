@@ -4,6 +4,7 @@ import styled from "styled-components"
 import axios from "axios";
 
 export default function  SessionsPage(props) {
+
     const { idFilme } = useParams();
     const [sessions, setSessions] = useState([])
     const [sessionDays, setSessionDays] = useState([])
