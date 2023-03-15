@@ -8,7 +8,7 @@ import SuccessPage from "./pages/SuccessPage/SuccessPage"
 import { Link } from "react-router-dom"
 
 export default function App() {
-    const [movieId, setMovieId] = useState();
+    const [successInfo, setSuccessInfo] = useState({})
     return (
         <>
             <BrowserRouter>
@@ -20,8 +20,12 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<HomePage />}></Route>
                 <Route path="/sessoes/:idFilme" element={<SessionsPage />}></Route>
-                <Route path="/assentos/:idSessao" element={<SeatsPage />}></Route>
-                <Route path="/sucesso" element={<SuccessPage />}></Route>
+                <Route path="/assentos/:idSessao" element={<SeatsPage 
+                setSuccessInfo={setSuccessInfo}
+                />}></Route>
+                <Route path="/sucesso" element={<SuccessPage   successInfo={successInfo} />}
+                
+                ></Route>
             </Routes>
             </BrowserRouter>
         </>

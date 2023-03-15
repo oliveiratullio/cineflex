@@ -49,7 +49,7 @@ export default function  SessionsPage(props) {
                 })}
             </div>
 
-            <FooterContainer>
+            <FooterContainer data-test="footer">
                 <div>
                     <img src={sessions.posterURL} alt={sessions.title} />
                 </div>

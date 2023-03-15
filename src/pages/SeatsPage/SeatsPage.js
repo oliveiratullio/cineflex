@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
-import { useParams } from "react-router-dom"
-import { PageContainer , SeatsContainer ,FormContainer, CaptionContainer, CaptionCircle, CaptionItem, SeatItem, FooterContainer } from "./Styled"
+import { useNavigate, useParams } from "react-router-dom"
+import { PageContainer , SeatsContainer ,FormContainer, CaptionContainer, CaptionCircle, CaptionItem, FooterContainer } from "./Styled"
 import Seat from "./Seat"
-export default function SeatsPage(props){
+export default function SeatsPage({setSuccessInfo}){
     const {idSessao} = useParams()
     const [session, setSession] = useState(undefined);
     const [selectedSeats, setSelectedSeats] = useState([])
-    const [status, setStatus] = useState("available")
+    const [name, setName] = useState("")
+    const [cpf, setCpf] = useState("")
+    const navigate = useNavigate();
     useEffect(() => {
         const promise = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`)
         promise.then((res) => {
@@ -36,6 +38,32 @@ export default function SeatsPage(props){
                 setSelectedSeats([...selectedSeats, seat])
             }
         }
+    }
+    function buy(e){
+        e.preventDefault()
+        const ids = selectedSeats.map((s) => s.id)
+        const body = { name, cpf , ids }
+        const promise = axios.post("https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many", body)
+        promise.then(res => {
+            const info = {
+                movie: session.movie.title,
+                date: session.day.date,
+                hour: session.name,
+                buyer: name,
+                cpf: cpf,
+                seats: selectedSeats.map((s) => s.name)
+            }
+
+            setSuccessInfo(info)
+            navigate("/sucesso")
+        })
+        promise.catch((err) => console.log(err.response.data))
+    }
+    function nameChange(e) {
+        setName(e.target.value)
+    }
+    function cpfChange(e) {
+        setCpf(e.target.value)
     }
     return (
         <PageContainer>
@@ -67,17 +95,17 @@ export default function SeatsPage(props){
                 </CaptionItem>
             </CaptionContainer>
 
-            <FormContainer>
+            <FormContainer onSubmit={buy}>
                 Nome do Comprador:
-                <input placeholder="Digite seu nome..." />
+                <input data-test="client-name" value={name} onChange={nameChange} required placeholder="Digite seu nome..." />
 
                 CPF do Comprador:
-                <input placeholder="Digite seu CPF..." />
+                <input data-test="client-cpf" value={cpf} onChange={cpfChange} required placeholder="Digite seu CPF..." />
 
-                <button>Reservar Assento(s)</button>
+                <button data-test="book-seat-btn" type="submit">Reservar Assento(s)</button>
             </FormContainer>
 
-            <FooterContainer>
+            <FooterContainer data-test="footer">
                 <div>
                     <img src={session.movie.posterURL} alt={session.movie.title} />
                 </div>
